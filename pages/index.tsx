@@ -1035,13 +1035,19 @@ export default function Home() {
         word.map((letter: any) => letter.focus ? { ...letter, focus: false } : letter)))
   }
 
-function handleKeyboard(event: any) {
-  setGuesses((prev: Array<Array<any>>) =>
-  prev.map((word: Array<any>, iW: number) =>
-    iW === guessIndex
-      ? word.map((letter: any) => letter.focus && ALPHABETO.includes(event.nativeEvent.key.toLowerCase()) ? { ...letter, value: event.nativeEvent.key } : letter)
-      : word))
-}
+  function handleKeyboard(event: { nativeEvent: { key: string } }) {
+    const key = event.nativeEvent.key
+    setGuesses((prev: Array<Array<any>>) =>
+      prev.map((word: Array<any>, iW: number) =>
+        iW === guessIndex
+          ? word.map((letter: any) =>
+            letter.focus && key === 'Backspace'
+              ? ''
+              : (letter.focus && ALPHABETO.includes(key.toLowerCase())
+                ? { ...letter, value: key }
+                : letter))
+          : word))
+  }
 
   return (
     <div className={styles.container} onKeyDown={(event: any) => handleKeyboard(event)} >
